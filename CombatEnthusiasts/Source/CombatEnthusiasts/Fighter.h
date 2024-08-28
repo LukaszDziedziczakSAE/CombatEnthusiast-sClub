@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Health.h"
+#include "Damager.h"
 #include "Fighter.generated.h"
 
 UCLASS()
@@ -19,6 +21,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -29,6 +33,23 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float MoveInputSensitivity;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UHealth* Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ADamager* LeftHand;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ADamager* RightHand;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ADamager* LeftFoot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ADamager* RightFoot;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<ADamager> Damager;
 
 private:
 	UFUNCTION(BlueprintCallable)
