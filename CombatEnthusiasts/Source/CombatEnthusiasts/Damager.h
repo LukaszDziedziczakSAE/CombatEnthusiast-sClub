@@ -23,8 +23,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USphereComponent* Sphere;
 
+	UFUNCTION()
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	bool IsDamaging;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
+	void BeginDamaging();
+
+	UFUNCTION(BlueprintCallable)
+	void EndDamaging();
 };

@@ -2,6 +2,7 @@
 
 
 #include "Damager.h"
+#include "Fighter.h"
 
 // Sets default values
 ADamager::ADamager()
@@ -22,7 +23,23 @@ ADamager::ADamager()
 void ADamager::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Sphere->OnComponentBeginOverlap.AddDynamic(this, &ADamager::OnOverlapBegin);
 	
+}
+
+void ADamager::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!IsDamaging || OtherActor == GetOwner()) return;
+
+	//UE_LOG(LogTemp, Warning, TEXT("Overlap %s"), *OtherActor->GetName());
+	AFighter* OwnerFighter = Cast<AFighter>(GetOwner());
+	AFighter* OtherFighter = Cast<AFighter>(OtherActor);
+
+	if (OwnerFighter == nullptr || OtherFighter == nullptr) return;
+
+	OtherFighter->Health->TakeHealth(OwnerFighter->GetCurretAttackDamage());
+
 }
 
 // Called every frame
@@ -30,5 +47,19 @@ void ADamager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ADamager::BeginDamaging()
+{
+	Sphere->SetCollisionProfileName(FName("OverlapAll"), true);
+	//UE_LOG(LogTemp, Warning, TEXT("%s BeginDamaging"), *GetName());
+	IsDamaging = true;
+}
+
+void ADamager::EndDamaging()
+{
+	Sphere->SetCollisionProfileName(FName("NoCollision"), true);
+	//UE_LOG(LogTemp, Warning, TEXT("%s EndDamaging"), *GetName());
+	IsDamaging = false;
 }
 

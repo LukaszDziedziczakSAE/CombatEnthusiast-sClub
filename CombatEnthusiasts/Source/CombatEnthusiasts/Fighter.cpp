@@ -10,14 +10,6 @@ AFighter::AFighter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
-
-	/*LeftHand = CreateDefaultSubobject<ADamager>(TEXT("Left Hand"));
-
-	RightHand = CreateDefaultSubobject<ADamager>(TEXT("Right Hand"));
-
-	LeftFoot = CreateDefaultSubobject<ADamager>(TEXT("Left Foot"));
-
-	RightFoot = CreateDefaultSubobject<ADamager>(TEXT("Right Foot"));*/
 }
 
 // Called when the game starts or when spawned
@@ -38,33 +30,38 @@ void AFighter::BeginPlay()
 		if (ChildMesh->DoesSocketExist(FName("Hand_Left")))
 		{
 			LeftHand = GetWorld()->SpawnActor<ADamager>(Damager, GetActorLocation(), GetActorRotation(), SpawnParams);
-			LeftHand->SetActorLabel(TEXT("Left Hand"));
+			//LeftHand->SetActorLabel(TEXT("Left Hand"));
 			LeftHand->AttachToComponent(ChildMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Hand_Left"));
 		}
 
 		if (ChildMesh->DoesSocketExist(FName("Hand_Right")))
 		{
 			RightHand = GetWorld()->SpawnActor<ADamager>(Damager, GetActorLocation(), GetActorRotation(), SpawnParams);
-			RightHand->SetActorLabel(TEXT("Right Hand"));
+			//RightHand->SetActorLabel(TEXT("Right Hand"));
 			RightHand->AttachToComponent(ChildMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Hand_Right"));
 		}
 
 		if (ChildMesh->DoesSocketExist(FName("Foot_Left")))
 		{
 			LeftFoot = GetWorld()->SpawnActor<ADamager>(Damager, GetActorLocation(), GetActorRotation(), SpawnParams);
-			LeftFoot->SetActorLabel(TEXT("Left Foot"));
+			//LeftFoot->SetActorLabel(TEXT("Left Foot"));
 			LeftFoot->AttachToComponent(ChildMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Foot_Left"));
 		}
 
 		if (ChildMesh->DoesSocketExist(FName("Foot_Right")))
 		{
 			RightFoot = GetWorld()->SpawnActor<ADamager>(Damager, GetActorLocation(), GetActorRotation(), SpawnParams);
-			RightFoot->SetActorLabel(TEXT("Right Foot"));
+			//RightFoot->SetActorLabel(TEXT("Right Foot"));
 			RightFoot->AttachToComponent(ChildMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Foot_Right"));
 		}
 	}
 	
-	
+	CurrentAttack = -1;
+
+	if (LeftHand == nullptr) UE_LOG(LogTemp, Error, TEXT("% s missing Left Hand Damager"), *GetName());
+	if (RightHand == nullptr) UE_LOG(LogTemp, Error, TEXT("% s missing Right Hand Damager"), *GetName());
+	if (LeftFoot == nullptr) UE_LOG(LogTemp, Error, TEXT("% s missing Left Foot Damager"), *GetName());
+	if (RightFoot == nullptr) UE_LOG(LogTemp, Error, TEXT("% s missing Right Foot Damager"), *GetName());
 
 }
 
@@ -82,8 +79,100 @@ void AFighter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void AFighter::BeginAttack(int MoveIndex)
+{
+	if (CurrentAttack != -1) return;
+
+	CurrentAttack = MoveIndex;
+
+	switch (Moves[CurrentAttack].BodyPart)
+	{
+	case EMoveBodyPart::LeftHand:
+		LeftHand->BeginDamaging();
+		break;
+
+	case EMoveBodyPart::RightHand:
+		RightHand->BeginDamaging();
+		break;
+
+	case EMoveBodyPart::LeftFoot:
+		LeftFoot->BeginDamaging();
+		break;
+
+	case EMoveBodyPart::RightFoot:
+		RightFoot->BeginDamaging();
+		break;
+
+	case EMoveBodyPart::BothHands:
+		LeftHand->BeginDamaging();
+		RightHand->BeginDamaging();
+		break;
+
+	default:
+		break;
+	}
+}
+
+void AFighter::CompleteAttack()
+{
+	switch (Moves[CurrentAttack].BodyPart)
+	{
+	case EMoveBodyPart::LeftHand:
+		LeftHand->EndDamaging();
+		break;
+
+	case EMoveBodyPart::RightHand:
+		RightHand->EndDamaging();
+		break;
+
+	case EMoveBodyPart::LeftFoot:
+		LeftFoot->EndDamaging();
+		break;
+
+	case EMoveBodyPart::RightFoot:
+		RightFoot->EndDamaging();
+		break;
+
+	case EMoveBodyPart::BothHands:
+		LeftHand->EndDamaging();
+		RightHand->EndDamaging();
+		break;
+
+	default:
+		break;
+	}
+
+
+	CurrentAttack = -1;
+}
+
+UAnimMontage* AFighter::GetCurrentAttackMontage()
+{
+	if (CurrentAttack == -1) return nullptr;
+	return Moves[CurrentAttack].AnimMontage;
+}
+
+float AFighter::GetCurretAttackDamage()
+{
+	if (CurrentAttack == -1) return 0;
+	return Moves[CurrentAttack].Damage;
+}
+
+void AFighter::BeginImpact_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s BeginImpact_Implementation"), *GetName());
+	CurrentAttack = -2;
+}
+
+void AFighter::CompleteImpact()
+{
+	CurrentAttack = -1;
+}
+
 void AFighter::AddMovement(float Forward)
 {
+	if (CurrentAttack != -1) return;
+
 	AddMovementInput(GetActorForwardVector(), Forward * MoveInputSensitivity);
 }
 

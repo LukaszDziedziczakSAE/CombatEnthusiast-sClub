@@ -2,6 +2,7 @@
 
 
 #include "Health.h"
+#include "Fighter.h"
 
 // Sets default values for this component's properties
 UHealth::UHealth()
@@ -18,6 +19,8 @@ UHealth::UHealth()
 void UHealth::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Figher = Cast<AFighter>(GetOwner());
 
 	ResetHealth();
 	
@@ -40,6 +43,8 @@ void UHealth::ResetHealth()
 void UHealth::TakeHealth(float Amount)
 {
 	CurretHealth = FMath::Clamp(CurretHealth - Amount, 0, MaxHealth);
+
+	if (Figher != nullptr) Figher->BeginImpact();
 }
 
 void UHealth::RestorHealth(float Amount)

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Health.h"
 #include "Damager.h"
+#include "Move.h"
 #include "Fighter.generated.h"
 
 UCLASS()
@@ -21,7 +22,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<FMove> Moves;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int CurrentAttack;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FString FighterName;
 
 public:	
 	// Called every frame
@@ -50,6 +58,27 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<ADamager> Damager;
+
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool IsAttacking;*/
+
+	UFUNCTION(BlueprintCallable)
+	void BeginAttack(int MoveIndex);
+
+	UFUNCTION(BlueprintCallable)
+	void CompleteAttack();
+
+	UFUNCTION(BlueprintPure)
+	UAnimMontage* GetCurrentAttackMontage();
+
+	UFUNCTION(BlueprintPure)
+	float GetCurretAttackDamage();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void BeginImpact();
+
+	UFUNCTION(BlueprintCallable)
+	void CompleteImpact();
 
 private:
 	UFUNCTION(BlueprintCallable)

@@ -26,6 +26,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float CurretHealth;
 
+	class AFighter* Figher;
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
