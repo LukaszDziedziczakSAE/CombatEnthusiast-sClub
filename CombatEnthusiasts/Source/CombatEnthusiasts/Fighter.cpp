@@ -2,6 +2,7 @@
 
 
 #include "Fighter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AFighter::AFighter()
@@ -25,30 +26,30 @@ void AFighter::BeginPlay()
 
 	for (USceneComponent* ChildMesh : Meshes)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ChildMesh %s"), *ChildMesh->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("ChildMesh %s"), *ChildMesh->GetName());
 
-		if (ChildMesh->DoesSocketExist(FName("Hand_Left")))
+		if (ChildMesh->DoesSocketExist(FName("Hand_Left")) && LeftHand == nullptr)
 		{
 			LeftHand = GetWorld()->SpawnActor<ADamager>(Damager, GetActorLocation(), GetActorRotation(), SpawnParams);
 			//LeftHand->SetActorLabel(TEXT("Left Hand"));
 			LeftHand->AttachToComponent(ChildMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Hand_Left"));
 		}
 
-		if (ChildMesh->DoesSocketExist(FName("Hand_Right")))
+		if (ChildMesh->DoesSocketExist(FName("Hand_Right")) && RightHand == nullptr)
 		{
 			RightHand = GetWorld()->SpawnActor<ADamager>(Damager, GetActorLocation(), GetActorRotation(), SpawnParams);
 			//RightHand->SetActorLabel(TEXT("Right Hand"));
 			RightHand->AttachToComponent(ChildMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Hand_Right"));
 		}
 
-		if (ChildMesh->DoesSocketExist(FName("Foot_Left")))
+		if (ChildMesh->DoesSocketExist(FName("Foot_Left")) && LeftFoot == nullptr)
 		{
 			LeftFoot = GetWorld()->SpawnActor<ADamager>(Damager, GetActorLocation(), GetActorRotation(), SpawnParams);
 			//LeftFoot->SetActorLabel(TEXT("Left Foot"));
 			LeftFoot->AttachToComponent(ChildMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Foot_Left"));
 		}
 
-		if (ChildMesh->DoesSocketExist(FName("Foot_Right")))
+		if (ChildMesh->DoesSocketExist(FName("Foot_Right")) && RightFoot == nullptr)
 		{
 			RightFoot = GetWorld()->SpawnActor<ADamager>(Damager, GetActorLocation(), GetActorRotation(), SpawnParams);
 			//RightFoot->SetActorLabel(TEXT("Right Foot"));
@@ -63,12 +64,18 @@ void AFighter::BeginPlay()
 	if (LeftFoot == nullptr) UE_LOG(LogTemp, Error, TEXT("% s missing Left Foot Damager"), *GetName());
 	if (RightFoot == nullptr) UE_LOG(LogTemp, Error, TEXT("% s missing Right Foot Damager"), *GetName());
 
+	GetCharacterMovement()->MaxWalkSpeed = WalkingSpeed;
 }
 
 // Called every frame
 void AFighter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (MovementInput.X != 0)
+	{
+		AddMovement(MovementInput.X);
+	}
 
 }
 
@@ -81,7 +88,7 @@ void AFighter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AFighter::BeginAttack(int MoveIndex)
 {
-	if (CurrentAttack != -1) return;
+	if (CurrentAttack != -1 || IsBlocking) return;
 
 	CurrentAttack = MoveIndex;
 
@@ -169,10 +176,27 @@ void AFighter::CompleteImpact()
 	CurrentAttack = -1;
 }
 
+void AFighter::SetIsBlocking(bool Blocking)
+{
+	IsBlocking = Blocking;
+}
+
+void AFighter::SetIsRunning(bool Running)
+{
+	IsRunning = Running;
+
+	GetCharacterMovement()->MaxWalkSpeed = IsRunning ? RunningSpeed : WalkingSpeed;
+}
+
 void AFighter::AddMovement(float Forward)
 {
-	if (CurrentAttack != -1) return;
+	if (CurrentAttack != -1 || IsBlocking) return;
 
 	AddMovementInput(GetActorForwardVector(), Forward * MoveInputSensitivity);
+}
+
+void AFighter::Death_Implementation()
+{
+	
 }
 

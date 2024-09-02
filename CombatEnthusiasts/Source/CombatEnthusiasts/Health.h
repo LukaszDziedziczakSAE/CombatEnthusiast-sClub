@@ -26,7 +26,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float CurretHealth;
 
-	class AFighter* Figher;
+	class AFighter* Fighter;
 
 public:	
 	// Called every frame

@@ -2,4 +2,88 @@
 
 
 #include "FightGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
+void AFightGameMode::BeginPlay()
+{
+	FightingGameInstance = Cast<UFightingGameInstance>(GetGameInstance());
+
+	TArray<AActor*> Spawners;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawner::StaticClass(), Spawners);
+	for (AActor* SpawnerActor : Spawners)
+	{
+		ASpawner* Spawner = Cast<ASpawner>(SpawnerActor);
+		if (Spawner != nullptr)
+		{
+			if (Spawner->GetSide() == EFighterSide::Left) LeftSpawner = Spawner;
+			if (Spawner->GetSide() == EFighterSide::Right) RightSpawner = Spawner;
+		}
+	}
+
+	if (LeftSpawner == nullptr) UE_LOG(LogTemp, Error, TEXT("Missing Left Spawner Referance"));
+	if (RightSpawner == nullptr) UE_LOG(LogTemp, Error, TEXT("Missing Right Spawner Referance"));
+	if (FightingGameInstance == nullptr) UE_LOG(LogTemp, Error, TEXT("Missing FightingGameInstance Referance"));
+
+	UE_LOG(LogTemp, Display, TEXT("Begining Fight"));
+
+	StartNewRound();
+}
+
+void AFightGameMode::Tick(float DeltaTime)
+{
+	if (Timer > 0) Timer -= DeltaTime;
+}
+
+void AFightGameMode::SpawnFighters()
+{
+	DespawnFighters();
+
+	if (FightingGameInstance == nullptr || LeftSpawner == nullptr || RightSpawner == nullptr) return;
+
+	if (FightingGameInstance->LeftFighter != nullptr)
+	{
+		LeftFighter = LeftSpawner->SpawnFighter(FightingGameInstance->LeftFighter);
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->Possess(LeftFighter);
+	}
+
+	if (FightingGameInstance->RightFighter != nullptr)
+	{
+		RightFighter = RightSpawner->SpawnFighter(FightingGameInstance->RightFighter);
+	}
+}
+
+void AFightGameMode::DespawnFighters()
+{
+	if (LeftFighter != nullptr)
+	{
+		LeftFighter->Destroy();
+		LeftFighter = nullptr;
+	}
+
+	if (RightFighter != nullptr)
+	{
+		RightFighter->Destroy();
+		RightFighter = nullptr;
+	}
+}
+
+void AFightGameMode::StartNewRound()
+{
+	if (Round < MaxRounds)
+	{
+		SpawnFighters();
+		Timer = RoundTime;
+		Round++;
+	}
+
+	else
+	{
+		ReturnToMenu();
+	}
+}
+
+void AFightGameMode::AddLeftWin()
+{
+	LeftWins++;
+	UE_LOG(LogTemp, Log, TEXT("Added Left Win"));
+}

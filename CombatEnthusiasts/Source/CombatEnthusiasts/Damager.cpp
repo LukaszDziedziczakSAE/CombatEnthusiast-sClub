@@ -32,6 +32,8 @@ void ADamager::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 {
 	if (!IsDamaging || OtherActor == GetOwner()) return;
 
+	EndDamaging();
+
 	//UE_LOG(LogTemp, Warning, TEXT("Overlap %s"), *OtherActor->GetName());
 	AFighter* OwnerFighter = Cast<AFighter>(GetOwner());
 	AFighter* OtherFighter = Cast<AFighter>(OtherActor);

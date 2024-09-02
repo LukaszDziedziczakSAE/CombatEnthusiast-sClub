@@ -20,7 +20,7 @@ void UHealth::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Figher = Cast<AFighter>(GetOwner());
+	Fighter = Cast<AFighter>(GetOwner());
 
 	ResetHealth();
 	
@@ -42,9 +42,28 @@ void UHealth::ResetHealth()
 
 void UHealth::TakeHealth(float Amount)
 {
-	CurretHealth = FMath::Clamp(CurretHealth - Amount, 0, MaxHealth);
+	if (Fighter == nullptr) return;
 
-	if (Figher != nullptr) Figher->BeginImpact();
+	if (Fighter->GetIsBlocking())
+	{
+		return;
+	}
+
+	else // fighter is not blocking
+	{
+		CurretHealth = FMath::Clamp(CurretHealth - Amount, 0, MaxHealth);
+	}
+
+	if (CurretHealth > 0)
+	{
+		Fighter->BeginImpact();
+	}
+	else
+	{
+		Fighter->Death();
+	}
+
+	
 }
 
 void UHealth::RestorHealth(float Amount)

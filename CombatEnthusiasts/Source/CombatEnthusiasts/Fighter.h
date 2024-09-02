@@ -9,6 +9,14 @@
 #include "Move.h"
 #include "Fighter.generated.h"
 
+UENUM(BlueprintType)
+enum EFighterSide
+{
+	None,
+	Left,
+	Right
+};
+
 UCLASS()
 class COMBATENTHUSIASTS_API AFighter : public ACharacter
 {
@@ -30,6 +38,24 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FString FighterName;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsRunning;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsBlocking;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float WalkingSpeed;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float RunningSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector2D MovementInput;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TEnumAsByte<EFighterSide> Side;
 
 public:	
 	// Called every frame
@@ -59,9 +85,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<ADamager> Damager;
 
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	bool IsAttacking;*/
-
 	UFUNCTION(BlueprintCallable)
 	void BeginAttack(int MoveIndex);
 
@@ -79,6 +102,27 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CompleteImpact();
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsBlocking(bool Blocking);
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsRunning(bool Running);
+
+	UFUNCTION(BlueprintPure)
+	bool GetIsBlocking() { return IsBlocking; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetMovementInput(FVector2D Input) { MovementInput = Input; }
+
+	UFUNCTION(BlueprintNativeEvent)
+	void Death();
+
+	UFUNCTION(BlueprintCallable)
+	void SetSide(TEnumAsByte<EFighterSide> NewSide) { Side = NewSide; }
+
+	UFUNCTION(BlueprintCallable)
+	FString GetFighterName() { return FighterName; }
 
 private:
 	UFUNCTION(BlueprintCallable)
