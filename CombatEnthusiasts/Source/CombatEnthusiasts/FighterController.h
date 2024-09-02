@@ -5,27 +5,25 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Fighter.h"
-//#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
 #include "FighterController.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class COMBATENTHUSIASTS_API AFighterController : public APlayerController
 {
 	GENERATED_BODY()
 
 protected:
-	//virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 	virtual void OnPossess(APawn* aPawn) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	AFighter* Fighter;
 	
-	/*UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UInputMappingContext* InputMapping;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputMappingContext* InputMapping;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* IA_Movement;
@@ -46,6 +44,9 @@ protected:
 	void Movement(const FInputActionValue& Value);
 
 	UFUNCTION()
+	void MovementEnd(const FInputActionValue& Value);
+
+	UFUNCTION()
 	void Kick(const FInputActionValue& Value);
 
 	UFUNCTION()
@@ -61,5 +62,5 @@ protected:
 	void RunStart(const FInputActionValue& Value);
 
 	UFUNCTION()
-	void RunEnd(const FInputActionValue& Value);*/
+	void RunEnd(const FInputActionValue& Value);
 };

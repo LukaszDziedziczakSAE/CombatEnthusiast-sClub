@@ -52,9 +52,6 @@ protected:
 	float RunningSpeed;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FVector2D MovementInput;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TEnumAsByte<EFighterSide> Side;
 
 public:	
@@ -115,8 +112,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool GetIsBlocking() { return IsBlocking; }
 
-	UFUNCTION(BlueprintCallable)
-	void SetMovementInput(FVector2D Input) { MovementInput = Input; }
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector2D MovementInput;
 
 	UFUNCTION(BlueprintNativeEvent)
 	void Death();
