@@ -59,10 +59,10 @@ void AFighter::BeginPlay()
 	
 	CurrentAttack = -1;
 
-	if (LeftHand == nullptr) UE_LOG(LogTemp, Error, TEXT("% s missing Left Hand Damager"), *GetName());
-	if (RightHand == nullptr) UE_LOG(LogTemp, Error, TEXT("% s missing Right Hand Damager"), *GetName());
-	if (LeftFoot == nullptr) UE_LOG(LogTemp, Error, TEXT("% s missing Left Foot Damager"), *GetName());
-	if (RightFoot == nullptr) UE_LOG(LogTemp, Error, TEXT("% s missing Right Foot Damager"), *GetName());
+	if (LeftHand == nullptr) UE_LOG(LogTemp, Error, TEXT("%s missing Left Hand Damager"), *GetName());
+	if (RightHand == nullptr) UE_LOG(LogTemp, Error, TEXT("%s missing Right Hand Damager"), *GetName());
+	if (LeftFoot == nullptr) UE_LOG(LogTemp, Error, TEXT("%s missing Left Foot Damager"), *GetName());
+	if (RightFoot == nullptr) UE_LOG(LogTemp, Error, TEXT("%s missing Right Foot Damager"), *GetName());
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkingSpeed;
 }
@@ -77,6 +77,7 @@ void AFighter::Tick(float DeltaTime)
 		AddMovement(MovementInput.X);
 	}
 
+	//UE_LOG(LogTemp, Error, TEXT("%s Tick"), *GetName());
 }
 
 // Called to bind functionality to input
@@ -118,6 +119,13 @@ void AFighter::BeginAttack(int MoveIndex)
 	default:
 		break;
 	}
+
+	PlayAttackAnimation();
+}
+
+void AFighter::PlayAttackAnimation_Implementation()
+{
+
 }
 
 void AFighter::CompleteAttack()
@@ -167,7 +175,7 @@ float AFighter::GetCurretAttackDamage()
 
 void AFighter::BeginImpact_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s BeginImpact_Implementation"), *GetName());
+	//UE_LOG(LogTemp, Warning, TEXT("%s BeginImpact_Implementation"), *GetName());
 	CurrentAttack = -2;
 }
 
@@ -192,7 +200,8 @@ void AFighter::AddMovement(float Forward)
 {
 	if (CurrentAttack != -1 || IsBlocking) return;
 
-	AddMovementInput(GetActorForwardVector(), Forward * MoveInputSensitivity);
+	//UE_LOG(LogTemp, Warning, TEXT("%s Adding Movement %f"), *GetName(), (Forward * MoveInputSensitivity));
+	AddMovementInput(GetActorForwardVector(), Forward * MoveInputSensitivity, true);
 }
 
 void AFighter::Death_Implementation()

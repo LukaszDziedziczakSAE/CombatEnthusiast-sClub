@@ -7,6 +7,7 @@
 #include "Fighter.h"
 #include "Spawner.h"
 #include "FightingGameInstance.h"
+#include "FighterController.h"
 #include "FightGameMode.generated.h"
 
 /**
@@ -16,6 +17,9 @@ UCLASS()
 class COMBATENTHUSIASTS_API AFightGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	AFightGameMode();
 
 protected:
 	virtual void BeginPlay() override;
@@ -73,5 +77,11 @@ public:
 	void AddLeftWin();
 
 	UFUNCTION(BlueprintCallable)
-	void AddRightWin() { RightWins++; }
+	void AddRightWin();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	AFighterController* Player1Controller;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	AFighterController* Player2Controller;
 };

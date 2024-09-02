@@ -88,6 +88,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void BeginAttack(int MoveIndex);
 
+	UFUNCTION(BlueprintNativeEvent)
+	void PlayAttackAnimation();
+
 	UFUNCTION(BlueprintCallable)
 	void CompleteAttack();
 
