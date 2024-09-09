@@ -18,6 +18,9 @@ class COMBATENTHUSIASTS_API AFightGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
+	bool bDoNotSpawnSecondControler;
+
 public:
 	AFightGameMode();
 
@@ -41,6 +44,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int RightWins;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AFighter> DefaultFighter;
 	
 public:
 	virtual void Tick(float DeltaTime) override;

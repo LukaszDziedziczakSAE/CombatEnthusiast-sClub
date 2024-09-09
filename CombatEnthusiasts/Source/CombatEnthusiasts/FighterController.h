@@ -41,6 +41,9 @@ protected:
 	UInputAction* IA_Run;
 
 	UFUNCTION()
+	virtual void SetupInputComponent() override;
+
+	UFUNCTION()
 	void Movement(const FInputActionValue& Value);
 
 	UFUNCTION()

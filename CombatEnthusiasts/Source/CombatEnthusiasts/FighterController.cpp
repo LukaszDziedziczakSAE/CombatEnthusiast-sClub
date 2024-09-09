@@ -8,22 +8,38 @@ void AFighterController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	
+}
 
-	if (Subsystem != nullptr && InputMapping != nullptr)
+void AFighterController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+
+	Fighter = Cast<AFighter>(aPawn);
+	UE_LOG(LogTemp, Display, TEXT("%s possessed %s"), *GetName(), *Fighter->GetFighterName());
+}
+
+void AFighterController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	//UEnhancedInputLocalPlayerSubsystem* Subsystem = GetLocalPlayer();
+
+	if (InputSubsystem != nullptr && InputMapping != nullptr)
 	{
-		Subsystem->ClearAllMappings();
-		Subsystem->AddMappingContext(InputMapping, 0);
+		InputSubsystem->ClearAllMappings();
+		InputSubsystem->AddMappingContext(InputMapping, 0);
 	}
-	else if (Subsystem != nullptr)
+	else if (InputSubsystem == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s Missing Subsystem Referance"), *GetName());
+		UE_LOG(LogTemp, Error, TEXT("%s Missing Input Subsystem Referance"), *GetName());
 		return;
 	}
 
-	else if (InputMapping != nullptr)
+	else if (InputMapping == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s Missing InputMapping Referance"), *GetName());
+		UE_LOG(LogTemp, Error, TEXT("%s Missing Input Mapping Referance"), *GetName());
 		return;
 	}
 
@@ -44,14 +60,6 @@ void AFighterController::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Missing Input Referance"));
 	}
-}
-
-void AFighterController::OnPossess(APawn* aPawn)
-{
-	Super::OnPossess(aPawn);
-
-	Fighter = Cast<AFighter>(aPawn);
-	UE_LOG(LogTemp, Display, TEXT("%s possessed %s"), *GetName(), *Fighter->GetFighterName());
 }
 
 void AFighterController::Movement(const FInputActionValue& Value)

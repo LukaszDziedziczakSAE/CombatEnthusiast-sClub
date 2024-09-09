@@ -35,10 +35,20 @@ void AFightGameMode::BeginPlay()
 	Player1Controller = Cast<AFighterController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	if (Player1Controller == nullptr) UE_LOG(LogTemp, Error, TEXT("Missing Player1Controller Referance"));
 
-	/*FString LocalPlayerError = TEXT("Error creating new Local Player");
-	GetGameInstance()->CreateLocalPlayer(1, LocalPlayerError, true);
-	Player2Controller = Cast<AFighterController>(UGameplayStatics::GetPlayerController(GetWorld(), 1));
-	if (Player2Controller == nullptr) UE_LOG(LogTemp, Error, TEXT("Missing Player2Controller Referance"));*/
+	if (!bDoNotSpawnSecondControler)
+	{
+		FString LocalPlayerError = TEXT("Error creating new Local Player");
+		GetGameInstance()->CreateLocalPlayer(1, LocalPlayerError, true);
+		Player2Controller = Cast<AFighterController>(UGameplayStatics::GetPlayerController(GetWorld(), 1));
+		if (Player2Controller == nullptr) UE_LOG(LogTemp, Error, TEXT("Missing Player2Controller Referance"));
+	}
+
+	if (DefaultFighter != nullptr)
+	{
+		if (FightingGameInstance->LeftFighter == nullptr) FightingGameInstance->LeftFighter = DefaultFighter;
+		if (FightingGameInstance->RightFighter == nullptr) FightingGameInstance->RightFighter = DefaultFighter;
+	}
+
 	
 	UE_LOG(LogTemp, Display, TEXT("Begining Fight"));
 	StartNewRound();
