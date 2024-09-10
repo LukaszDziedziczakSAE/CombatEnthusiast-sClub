@@ -3,6 +3,8 @@
 
 #include "Fighter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "FightGameMode.h"
+#include "Engine/TimerHandle.h"
 
 // Sets default values
 AFighter::AFighter()
@@ -157,7 +159,6 @@ void AFighter::CompleteAttack()
 		break;
 	}
 
-
 	CurrentAttack = -1;
 }
 
@@ -196,6 +197,14 @@ void AFighter::SetIsRunning(bool Running)
 	GetCharacterMovement()->MaxWalkSpeed = IsRunning ? RunningSpeed : WalkingSpeed;
 }
 
+void AFighter::DeathComplete()
+{
+	AFightGameMode* GameMode = Cast<AFightGameMode>(GetWorld()->GetAuthGameMode());
+	if (!IsValid(GameMode)) return;
+	UE_LOG(LogTemp, Log, TEXT("Starting new round"));
+	GameMode->StartNewRound();
+}
+
 void AFighter::AddMovement(float Forward)
 {
 	if (CurrentAttack != -1 || IsBlocking) return;
@@ -206,6 +215,24 @@ void AFighter::AddMovement(float Forward)
 
 void AFighter::Death_Implementation()
 {
-	
+	float t = PlayAnimMontage(DeathMontage);
+	FTimerHandle DestroyTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, this, &AFighter::DeathComplete, t, false);
+
+	AFightGameMode* GameMode = Cast<AFightGameMode>(GetWorld()->GetAuthGameMode());
+	if (!IsValid(GameMode)) return;
+	switch (Side)
+	{
+		case EFighterSide::Left:
+			GameMode->AddRightWin();
+			break;
+
+		case EFighterSide::Right:
+			GameMode->AddLeftWin();
+			break;
+
+	default:
+		break;
+	}
 }
 

@@ -81,16 +81,18 @@ void AFightGameMode::SpawnFighters()
 
 	if (FightingGameInstance == nullptr || LeftSpawner == nullptr || RightSpawner == nullptr) return;
 
-	if (FightingGameInstance->LeftFighter != nullptr && Player1Controller != nullptr)
+	if (FightingGameInstance->LeftFighter != nullptr)
 	{
 		LeftFighter = LeftSpawner->SpawnFighter(FightingGameInstance->LeftFighter);
-		Player1Controller->Possess(LeftFighter);
+		
+		if (Player1Controller != nullptr) Player1Controller->Possess(LeftFighter);
 	}
 
-	if (FightingGameInstance->RightFighter != nullptr /*&& Player2Controller != nullptr*/)
+	if (FightingGameInstance->RightFighter != nullptr)
 	{
 		RightFighter = RightSpawner->SpawnFighter(FightingGameInstance->RightFighter);
-		//Player2Controller->Possess(RightFighter);
+
+		if (Player2Controller != nullptr) Player2Controller->Possess(RightFighter);
 	}
 }
 

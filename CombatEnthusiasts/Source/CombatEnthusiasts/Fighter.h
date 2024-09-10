@@ -54,6 +54,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TEnumAsByte<EFighterSide> Side;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UAnimMontage* DeathMontage;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -117,6 +120,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void Death();
+
+	UFUNCTION()
+	void DeathComplete();
 
 	UFUNCTION(BlueprintCallable)
 	void SetSide(TEnumAsByte<EFighterSide> NewSide) { Side = NewSide; }
