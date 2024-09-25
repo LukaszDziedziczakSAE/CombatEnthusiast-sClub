@@ -7,6 +7,7 @@
 #include "Health.h"
 #include "Damager.h"
 #include "Move.h"
+#include "EFightingStyle.h"
 #include "Fighter.generated.h"
 
 UENUM(BlueprintType)
@@ -56,6 +57,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UAnimMontage* DeathMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TEnumAsByte<EFightingStyle> FightingStyle;
 
 public:	
 	// Called every frame
