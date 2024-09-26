@@ -162,6 +162,14 @@ void AFighter::CompleteAttack()
 	CurrentAttack = -1;
 }
 
+void AFighter::EndDamagingOnAll()
+{
+	LeftHand->EndDamaging();
+	RightHand->EndDamaging();
+	LeftFoot->EndDamaging();
+	RightFoot->EndDamaging();
+}
+
 UAnimMontage* AFighter::GetCurrentAttackMontage()
 {
 	if (CurrentAttack == -1) return nullptr;
@@ -182,6 +190,7 @@ void AFighter::BeginImpact_Implementation()
 
 	LastAttack = CurrentAttack;
 	CurrentAttack = -2;
+	EndDamagingOnAll();
 }
 
 void AFighter::CompleteImpact()

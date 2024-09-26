@@ -104,6 +104,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CompleteAttack();
 
+	UFUNCTION(BlueprintCallable)
+	void EndDamagingOnAll();
+
 	UFUNCTION(BlueprintPure)
 	UAnimMontage* GetCurrentAttackMontage();
 

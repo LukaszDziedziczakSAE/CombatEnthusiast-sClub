@@ -60,6 +60,8 @@ void ADamager::BeginDamaging()
 
 void ADamager::EndDamaging()
 {
+	if (!IsDamaging) return;
+
 	Sphere->SetCollisionProfileName(FName("NoCollision"), true);
 	//UE_LOG(LogTemp, Warning, TEXT("%s EndDamaging"), *GetName());
 	IsDamaging = false;
