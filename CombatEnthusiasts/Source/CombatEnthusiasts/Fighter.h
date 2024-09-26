@@ -64,6 +64,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TEnumAsByte<EFightingStyle> FightingStyle;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UTexture* Icon;
+
 	UFUNCTION(BlueprintCallable)
 	void AddMovement(float HorizontalInput);
 
