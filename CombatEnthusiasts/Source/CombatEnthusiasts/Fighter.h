@@ -34,16 +34,19 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FMove> Moves;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
 	int CurrentAttack;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
+	int LastAttack;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FString FighterName;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
 	bool IsRunning;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
 	bool IsBlocking;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -52,14 +55,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float RunningSpeed;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
 	TEnumAsByte<EFighterSide> Side;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fighter Animations")
 	class UAnimMontage* DeathMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TEnumAsByte<EFightingStyle> FightingStyle;
+
+	UFUNCTION(BlueprintCallable)
+	void AddMovement(float HorizontalInput);
 
 public:	
 	// Called every frame
@@ -74,20 +80,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UHealth* Health;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fighter Damager")
+	TSubclassOf<ADamager> Damager;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighter Damager")
 	ADamager* LeftHand;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighter Damager")
 	ADamager* RightHand;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighter Damager")
 	ADamager* LeftFoot;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighter Damager")
 	ADamager* RightFoot;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<ADamager> Damager;
 
 	UFUNCTION(BlueprintCallable)
 	void BeginAttack(int MoveIndex);
@@ -119,7 +125,10 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool GetIsBlocking() { return IsBlocking; }
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UFUNCTION(BlueprintPure)
+	bool GetIsRunning() { return IsRunning; }
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
 	FVector2D MovementInput;
 
 	UFUNCTION(BlueprintNativeEvent)
@@ -134,8 +143,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FString GetFighterName() { return FighterName; }
 
-private:
-	UFUNCTION(BlueprintCallable)
-	void AddMovement(float Forward);
+	UFUNCTION()
+	TEnumAsByte<EFightingStyle> GetFightingStyle();
 
+	UFUNCTION()
+	TEnumAsByte<EFighterSide> GetSide() { return Side; }
 };

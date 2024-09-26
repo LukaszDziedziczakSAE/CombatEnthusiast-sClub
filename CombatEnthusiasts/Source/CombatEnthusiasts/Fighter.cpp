@@ -171,12 +171,16 @@ UAnimMontage* AFighter::GetCurrentAttackMontage()
 float AFighter::GetCurretAttackDamage()
 {
 	if (CurrentAttack == -1) return 0;
+
+	if (CurrentAttack == -2) return Moves[LastAttack].Damage;
 	return Moves[CurrentAttack].Damage;
 }
 
 void AFighter::BeginImpact_Implementation()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("%s BeginImpact_Implementation"), *GetName());
+
+	LastAttack = CurrentAttack;
 	CurrentAttack = -2;
 }
 
@@ -205,12 +209,26 @@ void AFighter::DeathComplete()
 	GameMode->StartNewRound();
 }
 
-void AFighter::AddMovement(float Forward)
+TEnumAsByte<EFightingStyle> AFighter::GetFightingStyle()
+{
+	return FightingStyle;
+}
+
+void AFighter::AddMovement(float HorizontalInput)
 {
 	if (CurrentAttack != -1 || IsBlocking) return;
 
 	//UE_LOG(LogTemp, Warning, TEXT("%s Adding Movement %f"), *GetName(), (Forward * MoveInputSensitivity));
-	AddMovementInput(GetActorForwardVector(), Forward * MoveInputSensitivity, true);
+
+	if (Side == EFighterSide::Left)
+	{
+		AddMovementInput(GetActorForwardVector(), HorizontalInput * MoveInputSensitivity, true);
+	}
+
+	else if (Side == EFighterSide::Right)
+	{
+		AddMovementInput(GetActorForwardVector(), -1 * HorizontalInput * MoveInputSensitivity, true);
+	}
 }
 
 void AFighter::Death_Implementation()
