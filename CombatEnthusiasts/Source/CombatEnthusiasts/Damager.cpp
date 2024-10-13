@@ -3,6 +3,7 @@
 
 #include "Damager.h"
 #include "Fighter.h"
+#include "FighterSounds.h"
 
 // Sets default values
 ADamager::ADamager()
@@ -41,7 +42,10 @@ void ADamager::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (OwnerFighter == nullptr || OtherFighter == nullptr) return;
 
 	OtherFighter->Health->TakeHealth(OwnerFighter->GetCurretAttackDamage());
+	
+	OtherFighter->Sounds->PlayTookDamageVoice();
 
+	OtherFighter->Sounds->PlayFistHitBody();
 }
 
 // Called every frame

@@ -98,6 +98,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fighter Damager")
 	ADamager* RightFoot;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UFighterSounds* Sounds;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UAudioComponent* AudioVoice;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UAudioComponent* AudioBody;
+
 	UFUNCTION(BlueprintCallable)
 	void BeginAttack(int MoveIndex);
 
@@ -154,4 +163,7 @@ public:
 
 	UFUNCTION()
 	TEnumAsByte<EFighterSide> GetSide() { return Side; }
+
+	UFUNCTION(BlueprintPure)
+	float GetMovePlayRate();
 };

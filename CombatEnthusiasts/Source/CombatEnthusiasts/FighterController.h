@@ -29,10 +29,16 @@ protected:
 	UInputAction* IA_Movement;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UInputAction* IA_Kick;
+	UInputAction* IA_Kick1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UInputAction* IA_Punch;
+	UInputAction* IA_Kick2;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputAction* IA_Punch1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputAction* IA_Punch2;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* IA_Block;
@@ -50,10 +56,16 @@ protected:
 	void MovementEnd(const FInputActionValue& Value);
 
 	UFUNCTION()
-	void Kick(const FInputActionValue& Value);
+	void Kick1(const FInputActionValue& Value);
 
 	UFUNCTION()
-	void Punch(const FInputActionValue& Value);
+	void Kick2(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void Punch1(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void Punch2(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void BlockStart(const FInputActionValue& Value);

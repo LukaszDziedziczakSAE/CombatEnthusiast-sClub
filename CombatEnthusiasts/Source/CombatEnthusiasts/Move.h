@@ -29,4 +29,7 @@ struct FMove
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Damage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float PlayRate;
 };

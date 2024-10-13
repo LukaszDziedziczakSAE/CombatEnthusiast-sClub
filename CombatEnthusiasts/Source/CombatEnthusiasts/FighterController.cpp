@@ -48,8 +48,10 @@ void AFighterController::SetupInputComponent()
 	{
 		Input->BindAction(IA_Movement, ETriggerEvent::Triggered, this, &AFighterController::Movement);
 		Input->BindAction(IA_Movement, ETriggerEvent::Completed, this, &AFighterController::MovementEnd);
-		Input->BindAction(IA_Punch, ETriggerEvent::Triggered, this, &AFighterController::Punch);
-		Input->BindAction(IA_Kick, ETriggerEvent::Triggered, this, &AFighterController::Kick);
+		Input->BindAction(IA_Punch1, ETriggerEvent::Triggered, this, &AFighterController::Punch1);
+		Input->BindAction(IA_Punch2, ETriggerEvent::Triggered, this, &AFighterController::Punch2);
+		Input->BindAction(IA_Kick1, ETriggerEvent::Triggered, this, &AFighterController::Kick1);
+		Input->BindAction(IA_Kick2, ETriggerEvent::Triggered, this, &AFighterController::Kick2);
 		Input->BindAction(IA_Block, ETriggerEvent::Triggered, this, &AFighterController::BlockStart);
 		Input->BindAction(IA_Block, ETriggerEvent::Completed, this, &AFighterController::BlockEnd);
 		Input->BindAction(IA_Run, ETriggerEvent::Triggered, this, &AFighterController::RunStart);
@@ -76,7 +78,23 @@ void AFighterController::MovementEnd(const FInputActionValue& Value)
 	Fighter->MovementInput = FVector2D::Zero();
 }
 
-void AFighterController::Kick(const FInputActionValue& Value)
+void AFighterController::Kick1(const FInputActionValue& Value)
+{
+	if (Fighter != nullptr)
+	{
+		Fighter->BeginAttack(1);
+	}
+}
+
+void AFighterController::Kick2(const FInputActionValue& Value)
+{
+	if (Fighter != nullptr)
+	{
+		Fighter->BeginAttack(3);
+	}
+}
+
+void AFighterController::Punch1(const FInputActionValue& Value)
 {
 	if (Fighter != nullptr)
 	{
@@ -84,11 +102,11 @@ void AFighterController::Kick(const FInputActionValue& Value)
 	}
 }
 
-void AFighterController::Punch(const FInputActionValue& Value)
+void AFighterController::Punch2(const FInputActionValue& Value)
 {
 	if (Fighter != nullptr)
 	{
-		Fighter->BeginAttack(1);
+		Fighter->BeginAttack(2);
 	}
 }
 

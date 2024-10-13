@@ -5,6 +5,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "FightGameMode.h"
 #include "Engine/TimerHandle.h"
+#include "FighterSounds.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AFighter::AFighter()
@@ -13,6 +15,9 @@ AFighter::AFighter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
+	Sounds = CreateDefaultSubobject<UFighterSounds>(TEXT("Sounds"));
+	AudioVoice = CreateDefaultSubobject<UAudioComponent>(TEXT("Voice Audio"));
+	AudioBody = CreateDefaultSubobject<UAudioComponent>(TEXT("Body Audio"));
 }
 
 // Called when the game starts or when spawned
@@ -123,6 +128,8 @@ void AFighter::BeginAttack(int MoveIndex)
 	}
 
 	PlayAttackAnimation();
+
+	Sounds->PlayAttackVoice();
 }
 
 void AFighter::PlayAttackAnimation_Implementation()
@@ -221,6 +228,13 @@ void AFighter::DeathComplete()
 TEnumAsByte<EFightingStyle> AFighter::GetFightingStyle()
 {
 	return FightingStyle;
+}
+
+float AFighter::GetMovePlayRate()
+{
+	if (CurrentAttack != -1) return 1.0f;
+
+	return Moves[CurrentAttack].PlayRate;
 }
 
 void AFighter::AddMovement(float HorizontalInput)
