@@ -49,4 +49,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercentage() { return CurretHealth / MaxHealth; }
+
+	UFUNCTION(BlueprintPure)
+	bool IsAlive() { return CurretHealth >= 0; }
 };

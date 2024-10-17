@@ -46,24 +46,11 @@ void UHealth::TakeHealth(float Amount)
 
 	if (Fighter->GetIsBlocking())
 	{
+		//Fighter->BeginImpact();
 		return;
 	}
 
-	else // fighter is not blocking
-	{
-		CurretHealth = FMath::Clamp(CurretHealth - Amount, 0, MaxHealth);
-	}
-
-	if (CurretHealth > 0)
-	{
-		Fighter->BeginImpact();
-	}
-	else
-	{
-		Fighter->Death();
-	}
-
-	
+	CurretHealth = FMath::Clamp(CurretHealth - Amount, 0, MaxHealth);
 }
 
 void UHealth::RestorHealth(float Amount)

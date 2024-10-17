@@ -41,10 +41,9 @@ void ADamager::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 
 	if (OwnerFighter == nullptr || OtherFighter == nullptr) return;
 
-	OtherFighter->Health->TakeHealth(OwnerFighter->GetCurretAttackDamage());
+	OtherFighter->TakeHit(OwnerFighter->GetCurretAttackDamage());
 	
 	OtherFighter->Sounds->PlayTookDamageVoice();
-
 	OtherFighter->Sounds->PlayFistHitBody();
 }
 

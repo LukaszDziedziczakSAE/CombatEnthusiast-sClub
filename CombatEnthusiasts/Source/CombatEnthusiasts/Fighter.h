@@ -49,6 +49,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
 	bool IsBlocking;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
+	float XPos;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float WalkingSpeed;
 
@@ -60,6 +63,18 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fighter Animations")
 	class UAnimMontage* DeathMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fighter Animations")
+	class UAnimMontage* ImpactMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fighter Animations")
+	float ImpactMontagePlayRate{ 1.0f };
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fighter Animations")
+	class UAnimMontage* BlockingImpactMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fighter Animations")
+	float BlockingImpactMontagePlayRate{ 1.0f };
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TEnumAsByte<EFightingStyle> FightingStyle;
@@ -110,9 +125,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void BeginAttack(int MoveIndex);
 
-	UFUNCTION(BlueprintNativeEvent)
-	void PlayAttackAnimation();
-
 	UFUNCTION(BlueprintCallable)
 	void CompleteAttack();
 
@@ -125,7 +137,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetCurretAttackDamage();
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable)
 	void BeginImpact();
 
 	UFUNCTION(BlueprintCallable)
@@ -146,7 +158,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
 	FVector2D MovementInput;
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable)
 	void Death();
 
 	UFUNCTION()
@@ -166,4 +178,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	float GetMovePlayRate();
+
+	UFUNCTION(BlueprintCallable)
+	void TakeHit(float DamageAmount);
 };

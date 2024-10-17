@@ -62,6 +62,8 @@ void AFighter::BeginPlay()
 			//RightFoot->SetActorLabel(TEXT("Right Foot"));
 			RightFoot->AttachToComponent(ChildMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Foot_Right"));
 		}
+
+		XPos = GetActorLocation().X;
 	}
 	
 	CurrentAttack = -1;
@@ -78,6 +80,12 @@ void AFighter::BeginPlay()
 void AFighter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (GetActorLocation().X != XPos)
+	{
+		FVector Repos{XPos, GetActorLocation().Y, GetActorLocation().Z };
+		SetActorLocation(Repos);
+	}
 
 	if (MovementInput.X != 0)
 	{
@@ -127,14 +135,18 @@ void AFighter::BeginAttack(int MoveIndex)
 		break;
 	}
 
-	PlayAttackAnimation();
+	if (Moves[CurrentAttack].PlayRate <= 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid Playrate %f"), Moves[CurrentAttack].PlayRate);
+		return;
+	}
+
+	//PlayAttackAnimation();
+	float t = PlayAnimMontage(Moves[CurrentAttack].AnimMontage, Moves[CurrentAttack].PlayRate);
+	FTimerHandle AttackTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AFighter::CompleteAttack, t, false);
 
 	Sounds->PlayAttackVoice();
-}
-
-void AFighter::PlayAttackAnimation_Implementation()
-{
-
 }
 
 void AFighter::CompleteAttack()
@@ -191,13 +203,32 @@ float AFighter::GetCurretAttackDamage()
 	return Moves[CurrentAttack].Damage;
 }
 
-void AFighter::BeginImpact_Implementation()
+void AFighter::BeginImpact()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("%s BeginImpact_Implementation"), *GetName());
-
 	LastAttack = CurrentAttack;
 	CurrentAttack = -2;
 	EndDamagingOnAll();
+
+	if (Health->IsAlive())
+	{
+		if (IsBlocking)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("Blocking Impact"));
+			float t = PlayAnimMontage(BlockingImpactMontage, BlockingImpactMontagePlayRate);
+			FTimerHandle AttackTimerHandle;
+			GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AFighter::CompleteImpact, t, false);
+		}
+		else
+		{
+			float t = PlayAnimMontage(ImpactMontage, ImpactMontagePlayRate);
+			FTimerHandle AttackTimerHandle;
+			GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AFighter::CompleteImpact, t, false);
+		}
+	}
+	else
+	{
+		Death();
+	}
 }
 
 void AFighter::CompleteImpact()
@@ -237,6 +268,12 @@ float AFighter::GetMovePlayRate()
 	return Moves[CurrentAttack].PlayRate;
 }
 
+void AFighter::TakeHit(float DamageAmount)
+{
+	Health->TakeHealth(DamageAmount);
+	BeginImpact();
+}
+
 void AFighter::AddMovement(float HorizontalInput)
 {
 	if (CurrentAttack != -1 || IsBlocking) return;
@@ -254,7 +291,7 @@ void AFighter::AddMovement(float HorizontalInput)
 	}
 }
 
-void AFighter::Death_Implementation()
+void AFighter::Death()
 {
 	float t = PlayAnimMontage(DeathMontage);
 	FTimerHandle DestroyTimerHandle;
