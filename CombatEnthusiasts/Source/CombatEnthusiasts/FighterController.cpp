@@ -4,6 +4,7 @@
 #include "FighterController.h"
 
 
+
 void AFighterController::BeginPlay()
 {
 	Super::BeginPlay();
