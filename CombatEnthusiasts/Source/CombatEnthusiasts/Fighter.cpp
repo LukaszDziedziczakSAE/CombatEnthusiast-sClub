@@ -151,7 +151,7 @@ void AFighter::BeginAttack(int MoveIndex)
 
 void AFighter::CompleteAttack()
 {
-	switch (Moves[CurrentAttack].BodyPart)
+	/*switch (Moves[CurrentAttack].BodyPart)
 	{
 	case EMoveBodyPart::LeftHand:
 		LeftHand->EndDamaging();
@@ -176,8 +176,9 @@ void AFighter::CompleteAttack()
 
 	default:
 		break;
-	}
+	}*/
 
+	EndDamagingOnAll();
 	CurrentAttack = -1;
 }
 
@@ -243,9 +244,9 @@ void AFighter::SetIsBlocking(bool Blocking)
 
 void AFighter::SetIsRunning(bool Running)
 {
-	IsRunning = Running;
+	bIsRunning = Running;
 
-	GetCharacterMovement()->MaxWalkSpeed = IsRunning ? RunningSpeed : WalkingSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = bIsRunning ? RunningSpeed : WalkingSpeed;
 }
 
 void AFighter::DeathComplete()

@@ -44,7 +44,7 @@ protected:
 	FString FighterName;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
-	bool IsRunning;
+	bool bIsRunning;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
 	bool IsBlocking;
@@ -84,6 +84,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void AddMovement(float HorizontalInput);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UBlockingComponent* BlockingComponent;
 
 public:	
 	// Called every frame
@@ -153,7 +156,7 @@ public:
 	bool GetIsBlocking() { return IsBlocking; }
 
 	UFUNCTION(BlueprintPure)
-	bool GetIsRunning() { return IsRunning; }
+	bool GetIsRunning() { return bIsRunning; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Fighter Debug")
 	FVector2D MovementInput;
@@ -181,4 +184,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void TakeHit(float DamageAmount);
+
+	UFUNCTION(BlueprintCallable)
+	UBlockingComponent* Blocking() { return BlockingComponent; }
 };
