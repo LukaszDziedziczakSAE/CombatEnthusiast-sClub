@@ -153,7 +153,7 @@ public:
 	void SetIsRunning(bool Running);
 
 	UFUNCTION(BlueprintPure)
-	bool GetIsBlocking() { return IsBlocking; }
+	bool GetIsBlocking();
 
 	UFUNCTION(BlueprintPure)
 	bool GetIsRunning() { return bIsRunning; }

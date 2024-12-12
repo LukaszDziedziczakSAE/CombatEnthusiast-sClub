@@ -3,6 +3,7 @@
 
 #include "FighterAnimInstance.h"
 #include "Fighter.h"
+#include "BlockingComponent.h"
 
 void UFighterAnimInstance::Initilise()
 {
@@ -14,7 +15,7 @@ void UFighterAnimInstance::UpdateIsBlocking()
 {
 	if (!IsValid(Fighter)) return;
 
-	bIsBlocking = Fighter->GetIsBlocking();
+	bIsBlocking = Fighter->Blocking()->IsBlocking();
 }
 
 void UFighterAnimInstance::UpdateSpeed()

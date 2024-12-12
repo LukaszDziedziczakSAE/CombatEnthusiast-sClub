@@ -7,6 +7,7 @@
 #include "Engine/TimerHandle.h"
 #include "FighterSounds.h"
 #include "Components/AudioComponent.h"
+#include "BlockingComponent.h"
 
 // Sets default values
 AFighter::AFighter()
@@ -18,6 +19,8 @@ AFighter::AFighter()
 	Sounds = CreateDefaultSubobject<UFighterSounds>(TEXT("Sounds"));
 	AudioVoice = CreateDefaultSubobject<UAudioComponent>(TEXT("Voice Audio"));
 	AudioBody = CreateDefaultSubobject<UAudioComponent>(TEXT("Body Audio"));
+
+	BlockingComponent = CreateDefaultSubobject<UBlockingComponent>(TEXT("Blocking Component"));
 }
 
 // Called when the game starts or when spawned
@@ -54,6 +57,7 @@ void AFighter::BeginPlay()
 			LeftFoot = GetWorld()->SpawnActor<ADamager>(Damager, GetActorLocation(), GetActorRotation(), SpawnParams);
 			//LeftFoot->SetActorLabel(TEXT("Left Foot"));
 			LeftFoot->AttachToComponent(ChildMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Foot_Left"));
+			LeftFoot->bIsFoot = true;
 		}
 
 		if (ChildMesh->DoesSocketExist(FName("Foot_Right")) && RightFoot == nullptr)
@@ -61,6 +65,7 @@ void AFighter::BeginPlay()
 			RightFoot = GetWorld()->SpawnActor<ADamager>(Damager, GetActorLocation(), GetActorRotation(), SpawnParams);
 			//RightFoot->SetActorLabel(TEXT("Right Foot"));
 			RightFoot->AttachToComponent(ChildMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, FName("Foot_Right"));
+			RightFoot->bIsFoot = true;
 		}
 
 		XPos = GetActorLocation().X;
@@ -212,12 +217,13 @@ void AFighter::BeginImpact()
 
 	if (Health->IsAlive())
 	{
-		if (IsBlocking)
+		if (BlockingComponent->IsBlocking())
 		{
 			//UE_LOG(LogTemp, Warning, TEXT("Blocking Impact"));
 			float t = PlayAnimMontage(BlockingImpactMontage, BlockingImpactMontagePlayRate);
 			FTimerHandle AttackTimerHandle;
 			GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AFighter::CompleteImpact, t, false);
+			BlockingComponent->AddTiredness();
 		}
 		else
 		{
@@ -239,7 +245,7 @@ void AFighter::CompleteImpact()
 
 void AFighter::SetIsBlocking(bool Blocking)
 {
-	IsBlocking = Blocking;
+	BlockingComponent->SetIsBlocking(Blocking);
 }
 
 void AFighter::SetIsRunning(bool Running)
@@ -247,6 +253,11 @@ void AFighter::SetIsRunning(bool Running)
 	bIsRunning = Running;
 
 	GetCharacterMovement()->MaxWalkSpeed = bIsRunning ? RunningSpeed : WalkingSpeed;
+}
+
+bool AFighter::GetIsBlocking()
+{
+	return BlockingComponent->IsBlocking();
 }
 
 void AFighter::DeathComplete()

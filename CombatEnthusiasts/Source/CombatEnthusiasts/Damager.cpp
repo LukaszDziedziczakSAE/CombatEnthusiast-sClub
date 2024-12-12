@@ -44,7 +44,8 @@ void ADamager::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	OtherFighter->TakeHit(OwnerFighter->GetCurretAttackDamage());
 	
 	OtherFighter->Sounds->PlayTookDamageVoice();
-	OtherFighter->Sounds->PlayFistHitBody();
+	if (bIsFoot) OtherFighter->Sounds->PlayFootHitBody();
+	else OtherFighter->Sounds->PlayFistHitBody();
 }
 
 // Called every frame

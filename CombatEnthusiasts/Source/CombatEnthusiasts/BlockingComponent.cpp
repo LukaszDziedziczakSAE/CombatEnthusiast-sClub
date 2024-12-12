@@ -10,7 +10,6 @@ UBlockingComponent::UBlockingComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
 
 
@@ -19,8 +18,6 @@ void UBlockingComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
 }
 
 
@@ -29,6 +26,40 @@ void UBlockingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if (BlockingTiredness > 0 && !bIsBlocking)
+	{
+		BlockingTiredness = FMath::Clamp(BlockingTiredness - (BlockingTirednessRecoveryRate * DeltaTime), 0.0f, BlockingTirednessMax);
+
+		if (bRecoveryNeeded && BlockingTiredness < RecoveryUneededThreshhold)
+		{
+			bRecoveryNeeded = false;
+		}
+	}
+}
+
+void UBlockingComponent::SetIsBlocking(bool Blocking)
+{
+	if (Blocking)
+	{
+		if (!bRecoveryNeeded)
+		{
+			bIsBlocking = true;
+		}
+	}
+	else
+	{
+		bIsBlocking = false;
+	}
+}
+
+void UBlockingComponent::AddTiredness()
+{
+	BlockingTiredness = FMath::Clamp(BlockingTiredness + BlockingTirednessPerHit, 0.0f, BlockingTirednessMax);
+
+	if (BlockingTiredness == BlockingTirednessMax)
+	{
+		bRecoveryNeeded = true;
+		bIsBlocking = false;
+	}
 }
 

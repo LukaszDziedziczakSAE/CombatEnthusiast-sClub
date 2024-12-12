@@ -37,4 +37,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void EndDamaging();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsFoot;
 };
